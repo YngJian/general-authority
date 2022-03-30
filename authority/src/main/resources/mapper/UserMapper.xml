@@ -89,15 +89,15 @@
             u.avatar
     </sql>
 
-    <select id="countUserDetail" parameterType="user" resultType="long">
+    <select id="countUserDetail" parameterType="com.example.authority.domain.entity.User" resultType="long">
         <include refid="countUserDetailSql"/>
     </select>
 
-    <select id="findUserDetailPage" parameterType="user" resultType="com.example.authority.domain.entity.User">
+    <select id="findUserDetailPage" parameterType="com.example.authority.domain.entity.User" resultType="com.example.authority.domain.entity.User">
         <include refid="findUserDetailSql"/>
     </select>
 
-    <select id="findUserDetail" parameterType="user" resultType="com.example.authority.domain.entity.User">
+    <select id="findUserDetail" parameterType="com.example.authority.domain.entity.User" resultType="com.example.authority.domain.entity.User">
         <include refid="findUserDetailSql"/>
     </select>
 
@@ -145,7 +145,7 @@
             u.is_tab
     </select>
 
-    <select id="findUserDataPermissions" parameterType="long" resultType="userDataPermission">
+    <select id="findUserDataPermissions" parameterType="long" resultType="com.example.authority.domain.entity.UserDataPermission">
         select user_id userId, dept_id deptId from t_user_data_permission
         where user_id = #{userId}
     </select>

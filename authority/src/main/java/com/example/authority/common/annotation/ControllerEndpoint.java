@@ -17,5 +17,5 @@ public @interface ControllerEndpoint {
 
     String operation() default Strings.EMPTY;
 
-    String exceptionMessage() default "FEBS系统内部异常";
+    String exceptionMessage() default "系统内部异常";
 }

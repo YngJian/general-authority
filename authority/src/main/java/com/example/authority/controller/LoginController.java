@@ -1,13 +1,12 @@
 package com.example.authority.controller;
 
-import cc.mrbird.febs.common.properties.FebsProperties;
-import cc.mrbird.febs.common.service.ValidateCodeService;
-import cc.mrbird.febs.common.utils.Md5Util;
-import cc.mrbird.febs.monitor.service.ILoginLogService;
 import com.example.authority.common.annotation.Limit;
 import com.example.authority.common.entity.AuthResponse;
+import com.example.authority.common.properties.AuthProperties;
 import com.example.authority.domain.entity.User;
+import com.example.authority.service.ILoginLogService;
 import com.example.authority.service.IUserService;
+import com.example.authority.utils.Md5Util;
 import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.validation.annotation.Validated;
@@ -16,10 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -29,20 +25,16 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 public class LoginController extends BaseController {
-
     private final IUserService userService;
-    private final ValidateCodeService validateCodeService;
     private final ILoginLogService loginLogService;
-    private final FebsProperties properties;
+    private final AuthProperties properties;
 
     @PostMapping("login")
     @Limit(key = "login", period = 60, count = 10, name = "登录接口", prefix = "limit")
     public AuthResponse login(
             @NotBlank(message = "{required}") String username,
             @NotBlank(message = "{required}") String password,
-            @NotBlank(message = "{required}") String verifyCode,
-            boolean rememberMe, HttpServletRequest request) throws RuntimeException {
-        validateCodeService.check(request.getSession().getId(), verifyCode);
+            boolean rememberMe) throws RuntimeException {
         UsernamePasswordToken token = new UsernamePasswordToken(username,
                 Md5Util.encrypt(username.toLowerCase(), password), rememberMe);
         super.login(token);
@@ -70,11 +62,5 @@ public class LoginController extends BaseController {
         // 获取首页数据
         Map<String, Object> data = loginLogService.retrieveIndexPageData(username);
         return new AuthResponse().success().data(data);
-    }
-
-    @GetMapping("images/captcha")
-    @Limit(key = "get_captcha", period = 60, count = 10, name = "获取验证码", prefix = "limit")
-    public void captcha(HttpServletRequest request, HttpServletResponse response) throws IOException, RuntimeException {
-        validateCodeService.create(request, response);
     }
 }

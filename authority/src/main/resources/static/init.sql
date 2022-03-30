@@ -1,5 +1,6 @@
 set names utf8mb4;
-set foreign_key_checks = 0;
+set
+foreign_key_checks = 0;
 
 -- ----------------------------
 -- table structure for t_dept
@@ -7,15 +8,15 @@ set foreign_key_checks = 0;
 drop table if exists `t_dept`;
 create table `t_dept`
 (
-    `dept_id`     bigint(20)                                              not null auto_increment comment '部门id',
-    `parent_id`   bigint(20)                                              not null comment '上级部门id',
+    `dept_id`     bigint(20) not null auto_increment comment '部门id',
+    `parent_id`   bigint(20) not null comment '上级部门id',
     `dept_name`   varchar(100) character set utf8 collate utf8_general_ci not null comment '部门名称',
-    `order_num`   bigint(20)                                              null default null comment '排序',
-    `create_time` datetime(0)                                             null default null comment '创建时间',
-    `modify_time` datetime(0)                                             null default null comment '修改时间',
+    `order_num`   bigint(20) null default null comment '排序',
+    `create_time` datetime(0) null default null comment '创建时间',
+    `modify_time` datetime(0) null default null comment '修改时间',
     primary key (`dept_id`) using btree,
-    key `t_dept_parent_id` (`parent_id`),
-    key `t_dept_dept_name` (`dept_name`)
+    key           `t_dept_parent_id` (`parent_id`),
+    key           `t_dept_dept_name` (`dept_name`)
 ) engine = innodb
   auto_increment = 11
   character set = utf8
@@ -47,20 +48,39 @@ insert into `t_dept`
 values (10, 0, '系统部', 7, '2019-06-14 21:01:31', null);
 
 -- ----------------------------
+-- table structure for t_log
+-- ----------------------------
+drop table if exists `t_log`;
+create table `t_log`
+(
+    `id`          bigint(20) not null auto_increment comment '日志id',
+    `username`    varchar(50) character set utf8 collate utf8_general_ci null default null comment '操作用户',
+    `operation`   text character set utf8 collate utf8_general_ci null comment '操作内容',
+    `time`        decimal(11, 0) null default null comment '耗时',
+    `method`      text character set utf8 collate utf8_general_ci null comment '操作方法',
+    `params`      text character set utf8 collate utf8_general_ci null comment '方法参数',
+    `ip`          varchar(64) character set utf8 collate utf8_general_ci null default null comment '操作者ip',
+    `create_time` datetime(0) null default null comment '创建时间',
+    `location`    varchar(50) character set utf8 collate utf8_general_ci null default null comment '操作地点',
+    primary key (`id`) using btree,
+    key           `t_log_create_time` (`create_time`)
+) engine = innodb auto_increment = 1011 character set = utf8 collate = utf8_general_ci comment = '操作日志表' row_format = dynamic;
+
+-- ----------------------------
 -- table structure for t_login_log
 -- ----------------------------
 drop table if exists `t_login_log`;
 create table `t_login_log`
 (
-    `id`         bigint(11)                                             not null auto_increment comment 'id',
+    `id`         bigint(11) not null auto_increment comment 'id',
     `username`   varchar(50) character set utf8 collate utf8_general_ci not null comment '用户名',
-    `login_time` datetime(0)                                            not null comment '登录时间',
+    `login_time` datetime(0) not null comment '登录时间',
     `location`   varchar(50) character set utf8 collate utf8_general_ci null default null comment '登录地点',
     `ip`         varchar(50) character set utf8 collate utf8_general_ci null default null comment 'ip地址',
     `system`     varchar(50) character set utf8 collate utf8_general_ci null default null comment '操作系统',
     `browser`    varchar(50) character set utf8 collate utf8_general_ci null default null comment '浏览器',
     primary key (`id`) using btree,
-    key `t_login_log_login_time` (`login_time`)
+    key          `t_login_log_login_time` (`login_time`)
 ) engine = innodb
   auto_increment = 70
   character set = utf8
@@ -73,19 +93,19 @@ create table `t_login_log`
 drop table if exists `t_menu`;
 create table `t_menu`
 (
-    `menu_id`     bigint(20)  not null auto_increment comment '菜单/按钮id',
-    `parent_id`   bigint(20)  not null comment '上级菜单id',
+    `menu_id`     bigint(20) not null auto_increment comment '菜单/按钮id',
+    `parent_id`   bigint(20) not null comment '上级菜单id',
     `menu_name`   varchar(50) not null comment '菜单/按钮名称',
     `url`         varchar(50) default null comment '菜单url',
     `perms`       text comment '权限标识',
     `icon`        varchar(50) default null comment '图标',
     `type`        char(2)     not null comment '类型 0菜单 1按钮',
-    `order_num`   bigint(20)  default null comment '排序',
+    `order_num`   bigint(20) default null comment '排序',
     `create_time` datetime    not null comment '创建时间',
     `modify_time` datetime    default null comment '修改时间',
     primary key (`menu_id`) using btree,
-    key `t_menu_parent_id` (`parent_id`),
-    key `t_menu_menu_id` (`menu_id`)
+    key           `t_menu_parent_id` (`parent_id`),
+    key           `t_menu_menu_id` (`menu_id`)
 ) engine = innodb
   auto_increment = 179
   default charset = utf8
@@ -259,11 +279,11 @@ commit;
 drop table if exists `t_role`;
 create table `t_role`
 (
-    `role_id`     bigint(20)                                              not null auto_increment comment '角色id',
+    `role_id`     bigint(20) not null auto_increment comment '角色id',
     `role_name`   varchar(100) character set utf8 collate utf8_general_ci not null comment '角色名称',
     `remark`      varchar(100) character set utf8 collate utf8_general_ci null default null comment '角色描述',
-    `create_time` datetime(0)                                             not null comment '创建时间',
-    `modify_time` datetime(0)                                             null default null comment '修改时间',
+    `create_time` datetime(0) not null comment '创建时间',
+    `modify_time` datetime(0) null default null comment '修改时间',
     primary key (`role_id`) using btree
 ) engine = innodb
   auto_increment = 81
@@ -297,8 +317,8 @@ create table `t_role_menu`
     `role_id` bigint(20) not null comment '角色id',
     `menu_id` bigint(20) not null comment '菜单/按钮id',
     primary key (`id`) using btree,
-    key `t_role_menu_menu_id` (`menu_id`),
-    key `t_role_menu_role_id` (`role_id`)
+    key       `t_role_menu_menu_id` (`menu_id`),
+    key       `t_role_menu_role_id` (`role_id`)
 ) engine = innodb
   default charset = utf8
   row_format = dynamic comment ='角色菜单关联表';
@@ -624,24 +644,24 @@ commit;
 drop table if exists `t_user`;
 create table `t_user`
 (
-    `user_id`         bigint(20)                                              not null auto_increment comment '用户id',
+    `user_id`         bigint(20) not null auto_increment comment '用户id',
     `username`        varchar(50) character set utf8 collate utf8_general_ci  not null comment '用户名',
     `password`        varchar(128) character set utf8 collate utf8_general_ci not null comment '密码',
-    `dept_id`         bigint(20)                                              null default null comment '部门id',
+    `dept_id`         bigint(20) null default null comment '部门id',
     `email`           varchar(128) character set utf8 collate utf8_general_ci null default null comment '邮箱',
-    `mobile`          varchar(20) character set utf8 collate utf8_general_ci  null default null comment '联系电话',
+    `mobile`          varchar(20) character set utf8 collate utf8_general_ci null default null comment '联系电话',
     `status`          char(1) character set utf8 collate utf8_general_ci      not null comment '状态 0锁定 1有效',
-    `create_time`     datetime(0)                                             not null comment '创建时间',
-    `modify_time`     datetime(0)                                             null default null comment '修改时间',
-    `last_login_time` datetime(0)                                             null default null comment '最近访问时间',
-    `sex`             char(1) character set utf8 collate utf8_general_ci      null default null comment '性别 0男 1女 2保密',
-    `is_tab`          char(1) character set utf8 collate utf8_general_ci      null default null comment '是否开启tab，0关闭 1开启',
-    `theme`           varchar(10) character set utf8 collate utf8_general_ci  null default null comment '主题',
+    `create_time`     datetime(0) not null comment '创建时间',
+    `modify_time`     datetime(0) null default null comment '修改时间',
+    `last_login_time` datetime(0) null default null comment '最近访问时间',
+    `sex`             char(1) character set utf8 collate utf8_general_ci null default null comment '性别 0男 1女 2保密',
+    `is_tab`          char(1) character set utf8 collate utf8_general_ci null default null comment '是否开启tab，0关闭 1开启',
+    `theme`           varchar(10) character set utf8 collate utf8_general_ci null default null comment '主题',
     `avatar`          varchar(100) character set utf8 collate utf8_general_ci null default null comment '头像',
     `description`     varchar(100) character set utf8 collate utf8_general_ci null default null comment '描述',
     primary key (`user_id`) using btree,
-    key `t_user_username` (`username`),
-    key `t_user_mobile` (`mobile`)
+    key               `t_user_username` (`username`),
+    key               `t_user_mobile` (`mobile`)
 ) engine = innodb
   auto_increment = 8
   character set = utf8
@@ -686,8 +706,8 @@ create table `t_user_role`
     `id`      bigint(20) not null auto_increment comment 'id',
     `user_id` bigint(20) not null comment '用户id',
     `role_id` bigint(20) not null comment '角色id',
-    key `t_user_role_user_id` (`user_id`),
-    key `t_user_role_role_id` (`role_id`),
+    key       `t_user_role_user_id` (`user_id`),
+    key       `t_user_role_role_id` (`role_id`),
     primary key (`id`) using btree
 ) engine = innodb
   character set = utf8
@@ -754,5 +774,6 @@ insert into `t_user_data_permission`
 values (4, 5);
 commit;
 
-set foreign_key_checks = 1;
+set
+foreign_key_checks = 1;
 

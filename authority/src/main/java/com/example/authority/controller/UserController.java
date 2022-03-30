@@ -1,12 +1,12 @@
 package com.example.authority.controller;
 
-import cc.mrbird.febs.common.entity.Strings;
-import cc.mrbird.febs.common.utils.Md5Util;
 import com.example.authority.common.annotation.ControllerEndpoint;
 import com.example.authority.common.entity.AuthResponse;
 import com.example.authority.common.entity.QueryRequest;
+import com.example.authority.common.entity.Strings;
 import com.example.authority.domain.entity.User;
 import com.example.authority.service.IUserService;
+import com.example.authority.utils.Md5Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -67,7 +67,7 @@ public class UserController extends BaseController {
     @ControllerEndpoint(operation = "修改用户", exceptionMessage = "修改用户失败")
     public AuthResponse updateUser(@Valid User user) {
         if (user.getUserId() == null) {
-            throw new AuthResponse("用户ID为空");
+            throw new RuntimeException("用户ID为空");
         }
         userService.updateUser(user);
         return new AuthResponse().success();

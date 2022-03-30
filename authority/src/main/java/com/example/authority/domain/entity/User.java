@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
@@ -231,4 +232,7 @@ public class User {
     @TableField(exist = false)
     private String roleName;
 
+    public String getId() {
+        return StringUtils.lowerCase(username);
+    }
 }

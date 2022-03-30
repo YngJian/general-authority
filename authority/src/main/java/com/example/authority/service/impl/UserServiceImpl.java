@@ -12,6 +12,8 @@ import com.example.authority.domain.entity.*;
 import com.example.authority.domain.mapper.UserMapper;
 import com.example.authority.event.UserAuthenticationUpdatedEventPublisher;
 import com.example.authority.service.*;
+import com.example.authority.utils.AuthUtil;
+import com.example.authority.utils.Md5Util;
 import com.example.authority.utils.SortUtil;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
@@ -82,7 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setAvatar(User.DEFAULT_AVATAR);
         user.setTheme(User.THEME_BLACK);
         user.setIsTab(User.TAB_OPEN);
-        user.setPassword(User.DEFAULT_PASSWORD);
+        user.setPassword(Md5Util.encrypt(user.getUsername(), User.DEFAULT_PASSWORD));
         save(user);
         // 保存用户角色
         String[] roles = user.getRoleId().split(Strings.COMMA);
@@ -133,9 +135,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public void resetPassword(String[] usernames) {
         Arrays.stream(usernames).forEach(username -> {
             User user = new User();
-            user.setPassword(User.DEFAULT_PASSWORD);
-            baseMapper.update(user, new LambdaQueryWrapper<User>()
-                    .eq(User::getUsername, username));
+            user.setPassword(Md5Util.encrypt(username, User.DEFAULT_PASSWORD));
+            baseMapper.update(user, new LambdaQueryWrapper<User>().eq(User::getUsername, username));
         });
     }
 
@@ -143,7 +144,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Transactional(rollbackFor = Exception.class)
     public void register(String username, String password) {
         User user = new User();
-        user.setPassword(password);
+        user.setPassword(Md5Util.encrypt(username, password));
         user.setUsername(username);
         user.setCreateTime(new Date());
         user.setStatus(User.STATUS_VALID);
@@ -164,7 +165,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Transactional(rollbackFor = Exception.class)
     public void updatePassword(String username, String password) {
         User user = new User();
-        user.setPassword(password);
+        user.setPassword(Md5Util.encrypt(username, password));
         user.setModifyTime(new Date());
         baseMapper.update(user, new LambdaQueryWrapper<User>().eq(User::getUsername, username));
     }
@@ -237,8 +238,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     private boolean isCurrentUser(Long id) {
-        /*User currentUser = FebsUtil.getCurrentUser();
-        return currentUser.getUserId().equals(id);*/
-        return true;
+        User currentUser = AuthUtil.getCurrentUser();
+        return currentUser.getUserId().equals(id);
     }
 }

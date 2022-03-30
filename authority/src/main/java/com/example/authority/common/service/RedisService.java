@@ -1,6 +1,6 @@
 package com.example.authority.common.service;
 
-import cc.mrbird.febs.common.annotation.ConditionOnRedisCache;
+import com.example.authority.common.annotation.ConditionOnRedisCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

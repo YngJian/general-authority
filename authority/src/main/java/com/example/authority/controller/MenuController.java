@@ -1,7 +1,6 @@
 package com.example.authority.controller;
 
 
-import cc.mrbird.febs.common.exception.FebsException;
 import com.example.authority.common.annotation.ControllerEndpoint;
 import com.example.authority.common.entity.AuthResponse;
 import com.example.authority.domain.entity.Menu;
@@ -27,9 +26,9 @@ public class MenuController extends BaseController {
     private final IMenuService menuService;
 
     @GetMapping("{username}")
-    public AuthResponse getUserMenus(@NotBlank(message = "{required}") @PathVariable String username) throws FebsException {
+    public AuthResponse getUserMenus(@NotBlank(message = "{required}") @PathVariable String username) throws RuntimeException {
         if (!StringUtils.equalsIgnoreCase(username, getCurrentUser().getUsername())) {
-            throw new FebsException("您无权获取别人的菜单");
+            throw new RuntimeException("您无权获取别人的菜单");
         }
         return new AuthResponse().data(menuService.findUserMenus(username));
     }
