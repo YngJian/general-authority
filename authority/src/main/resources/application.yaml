@@ -26,3 +26,7 @@ spring:
         maxWait: 60000
         #连接的最小生存时间
         minEvictableIdleTimeMillis: 300000
+
+# 配置mybatis规则
+mybatis:
+  mapper-locations: classpath:mapper/*.xml  #sql映射文件位置
