@@ -1,0 +1,28 @@
+server:
+  port: 8020
+  servlet:
+    context-path: /authority
+
+spring:
+  application:
+    name: authority
+  datasource:
+    dynamic:
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        practice:
+          url: jdbc:mysql://127.0.0.1:3306/practice?serverTimezone=GMT%2B8
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.cj.jdbc.Driver
+      druid:
+        #初始化时建立物理连接的个数
+        initialSize: 10
+        #最小连接池数量
+        minIdle: 10
+        #最大连接池数量
+        maxActive: 20
+        #获取连接时最大等待时间
+        maxWait: 60000
+        #连接的最小生存时间
+        minEvictableIdleTimeMillis: 300000
