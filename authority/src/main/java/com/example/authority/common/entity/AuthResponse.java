@@ -16,8 +16,14 @@ public class AuthResponse extends HashMap<String, Object> {
         return this;
     }
 
+    public AuthResponse success(HttpStatus status, String msg) {
+        put("code", status.value());
+        put("msg", msg);
+        return this;
+    }
+
     public AuthResponse message(String message) {
-        put("message", message);
+        put("msg", message);
         return this;
     }
 
@@ -33,6 +39,12 @@ public class AuthResponse extends HashMap<String, Object> {
 
     public AuthResponse fail() {
         code(HttpStatus.INTERNAL_SERVER_ERROR);
+        return this;
+    }
+
+    public AuthResponse fail(String msg) {
+        code(HttpStatus.INTERNAL_SERVER_ERROR);
+        put("msg", msg);
         return this;
     }
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.authority.common.annotation.IsMobile;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -25,7 +27,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "t_user")
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = -4352868070794165001L;
 
     public static final String COL_USER_ID = "user_id";
 
@@ -141,6 +144,7 @@ public class User {
      */
     @TableField(value = "mobile")
     @ApiModelProperty(value = "联系电话")
+    @IsMobile(message = "{mobile}")
     private String mobile;
 
     /**

@@ -1,6 +1,8 @@
 auth:
-  enable-redis-cache: false
+  no-toke-path: /authority/images/captcha,/authority/register,/authority/login,/authority/logout
+  enable-redis-cache: true
   shiro:
+    jwt-timeout: 86400
     session-timeout: PT86400s
     cookie-timeout: PT604800s
     anon-url: /test/**,/febs/**,/img/**,/layui/**,/json/**,/images/captcha,/register

@@ -23,7 +23,7 @@ public interface AuthConstant {
     /**
      * shiro线程池名称
      */
-    String SHIRO_THREAD_POOL = "shiroThreadPool";
+    String AUTH_SHIRO_THREAD_POOL = "authShiroThreadPool";
 
     String DAY_START_PATTERN_SUFFIX = " 00:00:00";
 
@@ -35,4 +35,9 @@ public interface AuthConstant {
     String[] VALID_FILE_TYPE = {"xlsx", "zip"};
 
     String REQUEST_ALL = "/**";
+
+    /**
+     * shiro线程名称前缀
+     */
+    String AUTH_SHIRO_THREAD_NAME_PREFIX = "auth-shiro-thread-";
 }

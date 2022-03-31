@@ -6,21 +6,22 @@ import com.example.authority.common.properties.AuthProperties;
 import com.example.authority.domain.entity.User;
 import com.example.authority.service.ILoginLogService;
 import com.example.authority.service.IUserService;
+import com.example.authority.utils.JWTUtil;
 import com.example.authority.utils.Md5Util;
 import lombok.RequiredArgsConstructor;
-import org.apache.shiro.authc.UsernamePasswordToken;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
  * @author MrBird
  */
+@Slf4j
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -33,14 +34,16 @@ public class LoginController extends BaseController {
     @Limit(key = "login", period = 60, count = 10, name = "登录接口", prefix = "limit")
     public AuthResponse login(
             @NotBlank(message = "{required}") String username,
-            @NotBlank(message = "{required}") String password,
-            boolean rememberMe) throws RuntimeException {
-        UsernamePasswordToken token = new UsernamePasswordToken(username,
-                Md5Util.encrypt(username.toLowerCase(), password), rememberMe);
-        super.login(token);
+            @NotBlank(message = "{required}") String password) throws RuntimeException {
+        User user = userService.findByName(username);
+        String encrypt = Md5Util.encrypt(username, password);
+        if (!user.getPassword().equals(encrypt)) {
+            log.error("用户名密码不匹配！");
+            return new AuthResponse().fail("用户名密码不匹配！");
+        }
         // 保存登录日志
         loginLogService.saveLoginLog(username);
-        return new AuthResponse().success().data(properties.getShiro().getSuccessUrl());
+        return new AuthResponse().success().data(JWTUtil.sign(username, user.getPassword()));
     }
 
     @PostMapping("register")
@@ -62,5 +65,10 @@ public class LoginController extends BaseController {
         // 获取首页数据
         Map<String, Object> data = loginLogService.retrieveIndexPageData(username);
         return new AuthResponse().success().data(data);
+    }
+
+    @RequestMapping(path = "/unauthorized/{message}")
+    public AuthResponse unauthorized(@PathVariable String message) throws UnsupportedEncodingException {
+        return new AuthResponse().success(HttpStatus.FORBIDDEN, message);
     }
 }

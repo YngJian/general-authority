@@ -5,6 +5,7 @@ import com.example.authority.domain.entity.User;
 import com.example.authority.service.ISessionService;
 import com.example.authority.service.IUserDataPermissionService;
 import com.example.authority.service.IUserService;
+import com.example.authority.utils.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -63,6 +64,14 @@ public class ShiroRealm extends AuthorizingRealm {
     }
 
     /**
+     * 大坑！，必须重写此方法，不然Shiro会报错
+     */
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof BearerToken;
+    }
+
+    /**
      * 授权模块，获取用户角色和权限
      *
      * @param principal principal
@@ -70,7 +79,9 @@ public class ShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principal) {
-        User user = (User) principal.getPrimaryPrincipal();
+        String username = JWTUtil.getUsername(principal.toString());
+        User user = new User();
+        user.setUsername(username);
         userService.doGetUserAuthorizationInfo(user);
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.setRoles(user.getRoles());
@@ -81,28 +92,37 @@ public class ShiroRealm extends AuthorizingRealm {
     /**
      * 用户认证
      *
-     * @param token AuthenticationToken 身份认证 token
+     * @param auth AuthenticationToken 身份认证 token
      * @return AuthenticationInfo 身份认证信息
      * @throws AuthenticationException 认证相关异常
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
         // 获取用户输入的用户名和密码
-        String username = (String) token.getPrincipal();
-        String password = new String((char[]) token.getCredentials());
+        String token = (String) auth.getPrincipal();
+        String username = JWTUtil.getUsername(token);
+
+        if (StringUtils.isBlank(username)) {
+            throw new RuntimeException("Login expired!");
+        }
 
         // 通过用户名到数据库查询用户信息
         User user = this.userService.findByName(username);
 
-        if (user == null || !StringUtils.equals(password, user.getPassword())) {
-            throw new IncorrectCredentialsException("用户名或密码错误！");
+        if (user == null) {
+            throw new IncorrectCredentialsException("Username does not exist!");
         }
+
+        if (!JWTUtil.verify(token, username, user.getPassword())) {
+            throw new AuthenticationException("Wrong user name or password!");
+        }
+
         if (User.STATUS_LOCK.equals(user.getStatus())) {
-            throw new LockedAccountException("账号已被锁定,请联系管理员！");
+            throw new LockedAccountException("The account has been locked, please contact the administrator!");
         }
         String deptIds = this.userDataPermissionService.findByUserId(String.valueOf(user.getUserId()));
         user.setDeptIds(deptIds);
-        return new SimpleAuthenticationInfo(user, password, getName());
+        return new SimpleAuthenticationInfo(user, token, getName());
     }
 
     @Override

@@ -14,6 +14,8 @@ public class AuthProperties {
 
     public static final String PROPERTIES_PREFIX = "auth";
     public static final String ENABLE_REDIS_CACHE = "auth.enable-redis-cache";
+    public static final String JWT_TIMEOUT = "auth.shiro.jwt-timeout";
+    public static final String NO_TOKEN_PATH = "auth.no-toke-path";
 
     private ShiroProperties shiro = new ShiroProperties();
     private SwaggerProperties swagger = new SwaggerProperties();

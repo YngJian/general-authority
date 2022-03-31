@@ -3,7 +3,6 @@ package com.example.authority.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.authority.domain.entity.User;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 
@@ -29,10 +28,6 @@ public class BaseController {
 
     protected Session getSession(Boolean flag) {
         return getSubject().getSession(flag);
-    }
-
-    protected void login(AuthenticationToken token) {
-        getSubject().login(token);
     }
 
     protected Map<String, Object> getDataTable(IPage<?> pageInfo) {
