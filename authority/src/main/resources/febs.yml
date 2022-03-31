@@ -1,11 +1,11 @@
 auth:
-  no-toke-path: /authority/images/captcha,/authority/register,/authority/login,/authority/logout
+  no-toke-path: /authority/images/captcha,/authority/register,/authority/login,/authority/logout,/swagger-ui.html,/authority/swagger-resources/,/authority/v2/api-docs,/authority/webjars/springfox-swagger-ui/,/authority/configuration/security,/authority/configuration/ui,/authority/docs.html
   enable-redis-cache: true
   shiro:
-    jwt-timeout: 86400
+    jwt-timeout: 86400000
     session-timeout: PT86400s
     cookie-timeout: PT604800s
-    anon-url: /test/**,/febs/**,/img/**,/layui/**,/json/**,/images/captcha,/register
+    anon-url: /test/**,/febs/**,/img/**,/layui/**,/json/**,/images/captcha,/register,/
     login-url: /login
     success-url: /index
     logout-url: /logout

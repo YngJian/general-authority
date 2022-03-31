@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.authority.common.entity.AuthResponse;
 import com.example.authority.common.entity.Strings;
 import com.example.authority.common.properties.AuthProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
@@ -14,12 +15,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
@@ -55,6 +57,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             } catch (Exception e) {
                 //token 错误
                 responseError(response, e.getMessage());
+                return false;
             }
         }
         //如果请求头不存在 Token，则可能是执行登陆操作或者是游客状态访问，无需检查 token，直接返回 true
@@ -67,7 +70,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
-
         HttpServletRequest req = (HttpServletRequest) request;
         String requestUri = req.getRequestURI();
         return !NO_TOKEN_PATH.contains(requestUri);
@@ -81,6 +83,9 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String token = httpServletRequest.getHeader("token");
+        if (StringUtils.isBlank(token)) {
+            throw new RuntimeException("Token is null!");
+        }
         BearerToken jwtToken = new BearerToken(token);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         getSubject(request, response).login(jwtToken);
@@ -114,16 +119,21 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json; charset=utf-8");
-        PrintWriter out = null;
+        ServletOutputStream out = null;
         try {
-            out = httpServletResponse.getWriter();
+            out = httpServletResponse.getOutputStream();
             String data = JSONObject.toJSONString((new AuthResponse().success(HttpStatus.FORBIDDEN, msg)));
-            out.append(data);
+            out.write(data.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         } finally {
             if (out != null) {
-                out.close();
+                try {
+                    out.flush();
+                    out.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
     }

@@ -43,7 +43,7 @@ public class LoginController extends BaseController {
         }
         // 保存登录日志
         loginLogService.saveLoginLog(username);
-        return new AuthResponse().success().data(JWTUtil.sign(username, user.getPassword()));
+        return new AuthResponse().success().data(JWTUtil.sign(username, String.valueOf(user.getUserId())));
     }
 
     @PostMapping("register")

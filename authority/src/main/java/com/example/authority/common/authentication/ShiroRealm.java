@@ -57,7 +57,7 @@ public class ShiroRealm extends AuthorizingRealm {
 
     @PostConstruct
     private void initConfig() {
-        setAuthenticationCachingEnabled(false);
+        setAuthenticationCachingEnabled(true);
         setAuthorizationCachingEnabled(true);
         setCachingEnabled(true);
         setCacheManager(redisCacheManager == null ? ehCacheManager : redisCacheManager);
@@ -113,8 +113,8 @@ public class ShiroRealm extends AuthorizingRealm {
             throw new IncorrectCredentialsException("Username does not exist!");
         }
 
-        if (!JWTUtil.verify(token, username, user.getPassword())) {
-            throw new AuthenticationException("Wrong user name or password!");
+        if (!JWTUtil.verify(token, username, String.valueOf(user.getUserId()))) {
+            throw new AuthenticationException("Token expired.");
         }
 
         if (User.STATUS_LOCK.equals(user.getStatus())) {
