@@ -2,8 +2,8 @@ package com.example.authority.common.filter;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.authority.common.entity.AuthResponse;
-import com.example.authority.common.entity.Strings;
 import com.example.authority.common.properties.AuthProperties;
+import com.example.authority.utils.AuthUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -22,15 +22,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
+import java.util.regex.Pattern;
 
 public class JWTFilter extends BasicHttpAuthenticationFilter {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static Set<String> NO_TOKEN_PATH;
+    private static Pattern PATTERN;
 
     static {
         // 时机较早，必须手动获取配置
@@ -39,7 +37,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         Properties properties = yamlPropertiesFactoryBean.getObject();
         if (properties != null) {
             String property = properties.getProperty(AuthProperties.NO_TOKEN_PATH);
-            NO_TOKEN_PATH = new HashSet<>(Arrays.asList(property.split(Strings.COMMA)));
+            String regex = AuthUtil.getRegStr(property);
+            PATTERN = Pattern.compile(regex);
         }
     }
 
@@ -72,7 +71,10 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
         HttpServletRequest req = (HttpServletRequest) request;
         String requestUri = req.getRequestURI();
-        return !NO_TOKEN_PATH.contains(requestUri);
+        if(StringUtils.isNotBlank(requestUri)) {
+            requestUri = requestUri.replace(req.getContextPath(),"");
+        }
+        return !PATTERN.matcher(requestUri).matches();
     }
 
     /**

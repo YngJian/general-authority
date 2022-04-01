@@ -109,4 +109,31 @@ public abstract class AuthUtil {
         return (User) SecurityUtils.getSubject().getPrincipal();
     }
 
+    /**
+     * 将传递进来的不需要过滤得路径集合的字符串格式化成一系列的正则规则
+     * @param str 不需要过滤的路径集合
+     * @return 正则表达式规则
+     * */
+    public static  String getRegStr(String str){
+        if(StringUtils.isNotBlank(str)){
+            String[] excludes = str.split(";");
+            int length = excludes.length;
+            for(int i=0;i<length;i++){
+                String tmpExclude = excludes[i];
+                //对点、反斜杠和星号进行转义
+                tmpExclude = tmpExclude.replace("\\", "\\\\").replace(".", "\\.").replace("*", ".*");
+
+                tmpExclude = "^" + tmpExclude + "$";
+                excludes[i] = tmpExclude;
+            }
+            return StringUtils.join(excludes, "|");
+        }
+        return str;
+    }
+
+    public static void main(String[] args) {
+        String s = "/authority/images/captcha;/authority/register/*";
+        String regStr = getRegStr(s);
+        System.out.println(regStr);
+    }
 }

@@ -1,5 +1,5 @@
 auth:
-  no-toke-path: /authority/images/captcha,/authority/register,/authority/login,/authority/logout,/swagger-ui.html,/authority/swagger-resources/,/authority/v2/api-docs,/authority/webjars/springfox-swagger-ui/,/authority/configuration/security,/authority/configuration/ui,/authority/docs.html
+  no-toke-path: /images/captcha;/register;/login;/logout;/swagger-ui.html;/swagger-resources/;/v2/api-docs;/configuration/security;/configuration/ui;/doc.html;/webjars/**;/favicon.ico;/v3/**
   enable-redis-cache: true
   shiro:
     jwt-timeout: 86400000
@@ -13,11 +13,11 @@ auth:
   max-batch-insertNum: 300
   swagger:
     base-package: com.example.authority
-    title: authority Shiro API
-    description: authority Shiro API Document.
+    title: Authority Shiro API
+    description: Authority Shiro API Document.
     version: 2.0
     author: Vayne
-    url:
+    url: http://127.0.0.1:8020/authority
     email: 820335273@qq.com
     license: Apache 2.0
     license-url: https://www.apache.org/licenses/LICENSE-2.0.html

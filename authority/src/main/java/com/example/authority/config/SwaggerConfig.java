@@ -2,19 +2,19 @@ package com.example.authority.config;
 
 import com.example.authority.common.properties.AuthProperties;
 import com.example.authority.common.properties.SwaggerProperties;
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.oas.annotations.EnableOpenApi;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.servlet.ServletContext;
 import java.util.Collections;
 
 /**
@@ -22,19 +22,23 @@ import java.util.Collections;
  */
 @RequiredArgsConstructor
 @Configuration(proxyBeanMethods = false)
-@EnableSwagger2
-public class SwaggerConfig extends WebMvcConfigurationSupport {
+@EnableOpenApi
+@EnableKnife4j
+public class SwaggerConfig {
     private final AuthProperties properties;
 
     @Bean
-    public Docket docket() {
+    public Docket docket(ServletContext servletContext) {
         SwaggerProperties swagger = properties.getSwagger();
-        return new Docket(DocumentationType.OAS_30)
-                .apiInfo(apiInfo(swagger)).enable(true)
+        Docket docket = new Docket(DocumentationType.OAS_30)
+                .apiInfo(apiInfo(swagger))
+                .enable(true)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(swagger.getBasePackage()))
                 .paths(PathSelectors.any())
                 .build();
+
+        return docket;
     }
 
     private ApiInfo apiInfo(SwaggerProperties swagger) {
@@ -45,13 +49,5 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
                 null,
                 new Contact(swagger.getAuthor(), swagger.getUrl(), swagger.getEmail()),
                 swagger.getLicense(), swagger.getLicenseUrl(), Collections.emptyList());
-    }
-    //重写这个方法
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 }

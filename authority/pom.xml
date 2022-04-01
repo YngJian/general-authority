@@ -77,13 +77,13 @@
         <!--启用swagger2等相关组件-->
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.version}</version>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>2.0.9</version>
         </dependency>
 
         <!-- xss过滤 -->
@@ -190,6 +190,7 @@
             <artifactId>shiro-ehcache</artifactId>
             <version>${shiro.ehcache.version}</version>
         </dependency>
+
     </dependencies>
 
     <build>
