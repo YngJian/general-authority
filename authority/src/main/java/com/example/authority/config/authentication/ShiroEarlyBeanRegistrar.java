@@ -1,4 +1,4 @@
-package com.example.authority.common.authentication;
+package com.example.authority.config.authentication;
 
 import com.example.authority.common.Constant.AuthConstant;
 import com.example.authority.common.entity.Strings;
@@ -62,13 +62,6 @@ public class ShiroEarlyBeanRegistrar {
         LinkedHashMap<String, String> filterChainDefinitionMap;
         String[] anonUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(shiro.getAnonUrl(), Strings.COMMA);
         filterChainDefinitionMap = Arrays.stream(anonUrls).collect(Collectors.toMap(url -> url, url -> "anon", (a, b) -> b, LinkedHashMap::new));
-        // 放行Swagger相关访问
-        filterChainDefinitionMap.put("/doc.html", "anon");
-        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
-        filterChainDefinitionMap.put("/webjars/springfox-swagger-ui/**", "anon");
-        filterChainDefinitionMap.put("/swagger-resources/**", "anon");
-        filterChainDefinitionMap.put("/webjars/**", "anon");
-        filterChainDefinitionMap.put("/v2/api-docs", "anon");
         // 配置退出过滤器，其中具体的退出代码 Shiro已经替我们实现了
         filterChainDefinitionMap.put(shiro.getLogoutUrl(), "logout");
         // 除上以外所有 url都必须认证通过才可以访问，未通过认证自动访问 LoginUrl

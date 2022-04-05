@@ -1,4 +1,4 @@
-package com.example.authority.common.authentication;
+package com.example.authority.config.authentication;
 
 import com.example.authority.common.properties.AuthProperties;
 import com.example.authority.domain.entity.User;
@@ -79,9 +79,7 @@ public class ShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principal) {
-        String username = JWTUtil.getUsername(principal.toString());
-        User user = new User();
-        user.setUsername(username);
+        User user = (User) principal.getPrimaryPrincipal();
         userService.doGetUserAuthorizationInfo(user);
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.setRoles(user.getRoles());

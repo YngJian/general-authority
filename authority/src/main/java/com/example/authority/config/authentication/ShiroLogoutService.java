@@ -1,4 +1,4 @@
-package com.example.authority.common.authentication;
+package com.example.authority.config.authentication;
 
 import com.example.authority.common.Constant.AuthConstant;
 import com.example.authority.common.entity.Strings;
