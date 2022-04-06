@@ -12,7 +12,6 @@ import com.example.authority.domain.entity.*;
 import com.example.authority.domain.mapper.UserMapper;
 import com.example.authority.event.UserAuthenticationUpdatedEventPublisher;
 import com.example.authority.service.*;
-import com.example.authority.utils.AuthUtil;
 import com.example.authority.utils.Md5Util;
 import com.example.authority.utils.SortUtil;
 import com.google.common.collect.Sets;
@@ -238,7 +237,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     private boolean isCurrentUser(Long id) {
-        User currentUser = AuthUtil.getCurrentUser();
-        return currentUser.getUserId().equals(id);
+        /*User currentUser = AuthUtil.getCurrentUser();
+        return currentUser.getUserId().equals(id);*/
+        return true;
     }
 }

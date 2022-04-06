@@ -24,9 +24,6 @@
         <mysql.version>8.0.21</mysql.version>
         <mybatis.plus.version>3.4.2</mybatis.plus.version>
         <mybatis.plus.dynamic.version>3.3.6</mybatis.plus.dynamic.version>
-        <shiro.redis.version>3.3.1</shiro.redis.version>
-        <shiro.spring.version>1.7.0</shiro.spring.version>
-        <shiro.ehcache.version>1.7.1</shiro.ehcache.version>
         <springfox.swagger.version>3.0.0</springfox.swagger.version>
         <jsoup.version>1.12.1</jsoup.version>
         <fastjson.version>1.2.58</fastjson.version>
@@ -67,6 +64,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${google.guava.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
         </dependency>
 
         <dependency>
@@ -158,37 +160,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
-        </dependency>
-
-        <!-- shiro -->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring</artifactId>
-            <version>${shiro.spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.crazycake</groupId>
-            <artifactId>shiro-redis</artifactId>
-            <version>${shiro.redis.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.ibm.icu</groupId>
-                    <artifactId>icu4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.sf.saxon</groupId>
-                    <artifactId>Saxon-HE</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-ehcache</artifactId>
-            <version>${shiro.ehcache.version}</version>
         </dependency>
 
     </dependencies>

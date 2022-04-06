@@ -2,12 +2,10 @@ package com.example.authority.controller;
 
 import com.example.authority.common.annotation.Limit;
 import com.example.authority.common.entity.AuthResponse;
-import com.example.authority.common.properties.AuthProperties;
 import com.example.authority.domain.entity.User;
 import com.example.authority.service.ILoginLogService;
 import com.example.authority.service.IUserService;
 import com.example.authority.utils.JWTUtil;
-import com.example.authority.utils.Md5Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,7 +26,6 @@ import java.util.Map;
 public class LoginController extends BaseController {
     private final IUserService userService;
     private final ILoginLogService loginLogService;
-    private final AuthProperties properties;
 
     @PostMapping("login")
     @Limit(key = "login", period = 60, count = 10, name = "登录接口", prefix = "limit")
@@ -36,11 +33,11 @@ public class LoginController extends BaseController {
             @NotBlank(message = "{required}") String username,
             @NotBlank(message = "{required}") String password) throws RuntimeException {
         User user = userService.findByName(username);
-        String encrypt = Md5Util.encrypt(username, password);
+        /*String encrypt = Md5Util.encrypt(username, password);
         if (!user.getPassword().equals(encrypt)) {
             log.error("用户名密码不匹配！");
             return new AuthResponse().fail("用户名密码不匹配！");
-        }
+        }*/
         // 保存登录日志
         loginLogService.saveLoginLog(username);
         return new AuthResponse().success().data(JWTUtil.sign(username, String.valueOf(user.getUserId())));

@@ -40,4 +40,6 @@ public interface AuthConstant {
      * shiro线程名称前缀
      */
     String AUTH_SHIRO_THREAD_NAME_PREFIX = "auth-shiro-thread-";
+
+    String JWT_TIMEOUT = "auth.jwt-timeout";
 }

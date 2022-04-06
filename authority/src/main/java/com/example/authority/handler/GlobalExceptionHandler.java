@@ -5,10 +5,6 @@ import com.example.authority.common.entity.Strings;
 import com.example.authority.common.exception.LimitAccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.authz.UnauthorizedException;
-import org.apache.shiro.session.ExpiredSessionException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -117,29 +113,5 @@ public class GlobalExceptionHandler {
     public AuthResponse handleLimitAccessException(LimitAccessException e) {
         log.error("LimitAccessException", e);
         return new AuthResponse().code(HttpStatus.TOO_MANY_REQUESTS).message(e.getMessage());
-    }
-
-    @ExceptionHandler(value = UnauthorizedException.class)
-    public AuthResponse handleUnauthorizedException(UnauthorizedException e) {
-        log.error("UnauthorizedException, {}", e.getMessage());
-        return new AuthResponse().code(HttpStatus.FORBIDDEN).message(e.getMessage());
-    }
-
-    @ExceptionHandler(value = AuthenticationException.class)
-    public AuthResponse handleAuthenticationException(AuthenticationException e) {
-        log.error("AuthenticationException, {}", e.getMessage());
-        return new AuthResponse().code(HttpStatus.INTERNAL_SERVER_ERROR).message(e.getMessage());
-    }
-
-    @ExceptionHandler(value = AuthorizationException.class)
-    public AuthResponse handleAuthorizationException(AuthorizationException e) {
-        log.error("AuthorizationException, {}", e.getMessage());
-        return new AuthResponse().code(HttpStatus.UNAUTHORIZED).message(e.getMessage());
-    }
-
-    @ExceptionHandler(value = ExpiredSessionException.class)
-    public AuthResponse handleExpiredSessionException(ExpiredSessionException e) {
-        log.error("ExpiredSessionException", e);
-        return new AuthResponse().code(HttpStatus.UNAUTHORIZED).message(e.getMessage());
     }
 }

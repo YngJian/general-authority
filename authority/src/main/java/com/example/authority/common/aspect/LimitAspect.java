@@ -1,6 +1,5 @@
 package com.example.authority.common.aspect;
 
-import com.example.authority.common.annotation.ConditionOnRedisCache;
 import com.example.authority.common.annotation.Limit;
 import com.example.authority.common.entity.LimitType;
 import com.example.authority.common.entity.Strings;
@@ -32,7 +31,6 @@ import java.lang.reflect.Method;
 @Slf4j
 @Aspect
 @Component
-@ConditionOnRedisCache
 @RequiredArgsConstructor
 public class LimitAspect extends BaseAspectSupport {
 

@@ -5,7 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.authority.common.properties.AuthProperties;
+import com.example.authority.common.Constant.AuthConstant;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
 
@@ -22,7 +22,7 @@ public class JWTUtil {
         yamlPropertiesFactoryBean.setResources(new ClassPathResource("febs.yml"));
         Properties properties = yamlPropertiesFactoryBean.getObject();
         if (properties != null) {
-            EXPIRE_TIME = Long.parseLong(properties.getProperty(AuthProperties.JWT_TIMEOUT));
+            EXPIRE_TIME = Long.parseLong(properties.getProperty(AuthConstant.JWT_TIMEOUT));
         }
     }
 

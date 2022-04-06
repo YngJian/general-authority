@@ -1,6 +1,5 @@
 package com.example.authority.config;
 
-import com.example.authority.common.properties.AuthProperties;
 import com.example.authority.common.properties.SwaggerProperties;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +24,11 @@ import java.util.Collections;
 @EnableOpenApi
 @EnableKnife4j
 public class SwaggerConfig {
-    private final AuthProperties properties;
+
+    private final SwaggerProperties swagger;
 
     @Bean
     public Docket docket(ServletContext servletContext) {
-        SwaggerProperties swagger = properties.getSwagger();
         Docket docket = new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo(swagger))
                 .enable(true)
