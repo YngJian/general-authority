@@ -8,7 +8,6 @@ import com.example.authority.service.IMenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,7 +40,6 @@ public class MenuController extends BaseController {
     }
 
     @PostMapping
-    @RequiresPermissions("menu:add")
     @ControllerEndpoint(operation = "新增菜单/按钮", exceptionMessage = "新增菜单/按钮失败")
     public AuthResponse addMenu(@Valid Menu menu) {
         menuService.createMenu(menu);
@@ -49,7 +47,6 @@ public class MenuController extends BaseController {
     }
 
     @GetMapping("delete/{menuIds}")
-    @RequiresPermissions("menu:delete")
     @ControllerEndpoint(operation = "删除菜单/按钮", exceptionMessage = "删除菜单/按钮失败")
     public AuthResponse deleteMenus(@NotBlank(message = "{required}") @PathVariable String menuIds) {
         menuService.deleteMenus(menuIds);
@@ -57,7 +54,6 @@ public class MenuController extends BaseController {
     }
 
     @PostMapping("update")
-    @RequiresPermissions("menu:update")
     @ControllerEndpoint(operation = "修改菜单/按钮", exceptionMessage = "修改菜单/按钮失败")
     public AuthResponse updateMenu(@Valid Menu menu) {
         menuService.updateMenu(menu);

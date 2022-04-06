@@ -2,10 +2,8 @@ package com.example.authority.utils;
 
 
 import com.example.authority.common.entity.Strings;
-import com.example.authority.domain.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
@@ -98,15 +96,6 @@ public abstract class AuthUtil {
         }
         Matcher matcher = CHINESE_PATTERN.matcher(value);
         return matcher.find();
-    }
-
-    /**
-     * 获取当前登录用户
-     *
-     * @return User
-     */
-    public static User getCurrentUser() {
-        return (User) SecurityUtils.getSubject().getPrincipal();
     }
 
     /**

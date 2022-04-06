@@ -9,7 +9,6 @@ import com.example.authority.service.IDeptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -40,7 +39,6 @@ public class DeptController {
 
     @PostMapping
     @ControllerEndpoint(operation = "新增部门", exceptionMessage = "新增部门失败")
-    @RequiresPermissions("dept:add")
     public AuthResponse addDept(@Valid Dept dept) {
         deptService.createDept(dept);
         return new AuthResponse().success();
@@ -48,7 +46,6 @@ public class DeptController {
 
     @GetMapping("delete/{deptIds}")
     @ControllerEndpoint(operation = "删除部门", exceptionMessage = "删除部门失败")
-    @RequiresPermissions("dept:delete")
     public AuthResponse deleteDept(@NotBlank(message = "{required}") @PathVariable String deptIds) throws RuntimeException {
         deptService.deleteDept(StringUtils.split(deptIds, Strings.COMMA));
         return new AuthResponse().success();
@@ -56,7 +53,6 @@ public class DeptController {
 
     @PostMapping("update")
     @ControllerEndpoint(operation = "修改部门", exceptionMessage = "修改部门失败")
-    @RequiresPermissions("dept:update")
     public AuthResponse updateDept(@Valid Dept dept) throws RuntimeException {
         deptService.updateDept(dept);
         return new AuthResponse().success();

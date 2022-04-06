@@ -10,7 +10,6 @@ import com.example.authority.utils.Md5Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,14 +39,12 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("list")
-    @RequiresPermissions("user:view")
     public AuthResponse userList(User user, QueryRequest request) {
         return new AuthResponse().success()
                 .data(getDataTable(userService.findUserDetailList(user, request)));
     }
 
     @PostMapping
-    @RequiresPermissions("user:add")
     @ControllerEndpoint(operation = "新增用户", exceptionMessage = "新增用户失败")
     public AuthResponse addUser(@Valid User user) {
         userService.createUser(user);
@@ -55,7 +52,6 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("delete/{userIds}")
-    @RequiresPermissions("user:delete")
     @ControllerEndpoint(operation = "删除用户", exceptionMessage = "删除用户失败")
     public AuthResponse deleteUsers(@NotBlank(message = "{required}") @PathVariable String userIds) {
         userService.deleteUsers(StringUtils.split(userIds, Strings.COMMA));
@@ -63,7 +59,6 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("update")
-    @RequiresPermissions("user:update")
     @ControllerEndpoint(operation = "修改用户", exceptionMessage = "修改用户失败")
     public AuthResponse updateUser(@Valid User user) {
         if (user.getUserId() == null) {
@@ -74,7 +69,6 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("password/reset/{usernames}")
-    @RequiresPermissions("user:password:reset")
     @ControllerEndpoint(exceptionMessage = "重置用户密码失败")
     public AuthResponse resetPassword(@NotBlank(message = "{required}") @PathVariable String usernames) {
         userService.resetPassword(StringUtils.split(usernames, Strings.COMMA));
