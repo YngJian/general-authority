@@ -119,4 +119,6 @@ public interface IUserService extends IService<User> {
      * @param user 用户
      */
     void doGetUserAuthorizationInfo(User user);
+
+    boolean check(String currentPassword, String password);
 }

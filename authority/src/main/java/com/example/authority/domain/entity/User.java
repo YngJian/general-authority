@@ -11,11 +11,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -236,7 +238,9 @@ public class User implements Serializable {
     @TableField(exist = false)
     private String roleName;
 
-    public String getId() {
-        return StringUtils.lowerCase(username);
+    public List<SimpleGrantedAuthority> getUserPermissions() {
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        stringPermissions.forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
+        return authorities;
     }
 }

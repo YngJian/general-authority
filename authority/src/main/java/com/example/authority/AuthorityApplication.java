@@ -7,8 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author yangj
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.example.authority", "com.vayne.security"})
 @MapperScan("com.example.authority.domain.mapper")
+
 public class AuthorityApplication {
 
     public static void main(String[] args) {

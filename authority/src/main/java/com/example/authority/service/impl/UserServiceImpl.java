@@ -18,6 +18,7 @@ import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +39,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private final IUserRoleService userRoleService;
     private final UserAuthenticationUpdatedEventPublisher publisher;
     private final IUserDataPermissionService userDataPermissionService;
-
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public User findByName(String username) {
@@ -143,7 +144,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Transactional(rollbackFor = Exception.class)
     public void register(String username, String password) {
         User user = new User();
-        user.setPassword(Md5Util.encrypt(username, password));
+        user.setPassword(bCryptPasswordEncoder.encode(password));
         user.setUsername(username);
         user.setCreateTime(new Date());
         user.setStatus(User.STATUS_VALID);
@@ -240,5 +241,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         /*User currentUser = AuthUtil.getCurrentUser();
         return currentUser.getUserId().equals(id);*/
         return true;
+    }
+
+    @Override
+    public boolean check(String currentPassword, String password) {
+        return this.bCryptPasswordEncoder.matches(currentPassword, password);
     }
 }

@@ -5,6 +5,7 @@ import com.example.authority.common.annotation.ControllerEndpoint;
 import com.example.authority.common.entity.AuthResponse;
 import com.example.authority.domain.entity.Menu;
 import com.example.authority.service.IMenuService;
+import com.example.authority.utils.CurrentUserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,9 +25,11 @@ public class MenuController extends BaseController {
 
     private final IMenuService menuService;
 
+    private final CurrentUserUtils currentUserUtils;
+
     @GetMapping("{username}")
     public AuthResponse getUserMenus(@NotBlank(message = "{required}") @PathVariable String username) throws RuntimeException {
-        if (!StringUtils.equalsIgnoreCase(username, getCurrentUser().getUsername())) {
+        if (!StringUtils.equalsIgnoreCase(username, currentUserUtils.getCurrentUserName())) {
             throw new RuntimeException("您无权获取别人的菜单");
         }
         return new AuthResponse().data(menuService.findUserMenus(username));
