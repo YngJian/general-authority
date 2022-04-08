@@ -4,6 +4,7 @@ import com.example.authority.common.entity.JwtUser;
 import com.example.authority.domain.entity.User;
 import com.example.authority.service.IUserService;
 import com.example.authority.utils.CurrentUserUtils;
+import com.vayne.security.constants.SecurityConstants;
 import com.vayne.security.entity.LoginRequest;
 import com.vayne.security.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -40,11 +42,14 @@ public class AuthService {
                 .collect(Collectors.toList());
         String token = JwtTokenUtils.createToken(user.getUsername(), String.valueOf(user.getUserId()),
                 authorities, loginRequest.getRememberMe());
-        stringRedisTemplate.opsForValue().set(user.getUserId().toString(), token);
+
+        long expiration = loginRequest.getRememberMe() ? SecurityConstants.EXPIRATION_REMEMBER : SecurityConstants.EXPIRATION;
+        stringRedisTemplate.opsForValue().set(SecurityConstants.TOKEN_REDIS_PREFIX + user.getUserId().toString(),
+                token, expiration, TimeUnit.SECONDS);
         return token;
     }
 
     public void removeToken() {
-        stringRedisTemplate.delete(currentUserUtils.getCurrentUser().getUserId().toString());
+        stringRedisTemplate.delete(SecurityConstants.TOKEN_REDIS_PREFIX + currentUserUtils.getCurrentUser().getUserId().toString());
     }
 }

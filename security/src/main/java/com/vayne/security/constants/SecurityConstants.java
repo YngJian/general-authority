@@ -28,6 +28,7 @@ public final class SecurityConstants {
     // JWT token defaults
     public static final String TOKEN_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
+    public static final String TOKEN_REDIS_PREFIX = "token:";
     public static final String TOKEN_TYPE = "JWT";
 
     // Swagger WHITELIST

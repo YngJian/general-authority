@@ -240,7 +240,7 @@ public class User implements Serializable {
 
     public List<SimpleGrantedAuthority> getUserPermissions() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        stringPermissions.forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
+        stringPermissions.forEach(userPermissions -> authorities.add(new SimpleGrantedAuthority(userPermissions)));
         return authorities;
     }
 }
